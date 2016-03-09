@@ -40,7 +40,7 @@ elems :: Ix i => Array i e -> [e]
 elems Array {tree=t} = values t
 
 array :: Ix i => (i, i) -> [(i, e)] -> Array i e
-array = undefined
+array (l, r) a = Array {bounds=(l, r), tree=listToNode a}
 
 update :: Ix i => i -> e -> Array i e -> Array i e
 update i e a@Array {tree=t} = a {tree=modify i e t}
