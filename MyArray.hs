@@ -46,7 +46,8 @@ update :: Ix i => i -> e -> Array i e -> Array i e
 update i e a@Array {tree=t} = a {tree=modify i e t}
 
 (//) :: Ix i => Array i e -> [(i, e)] -> Array i e
-(//) = undefined
+(//) a u = foldl (\acc (i, e) -> update i e acc) a u
+-- TODO Implement faster solution
 
 fromJust :: Maybe a -> a
 fromJust (Just a) = a
