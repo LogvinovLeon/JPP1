@@ -1,7 +1,7 @@
-all: ArrayTests
+all: MyArray
 
-ArrayTests: ArrayTests.hs MyArray.hs
-	ghc -Wall -Werror --make ArrayTests
+MyArray: MyArray.hs
+	ghc -Wall --make MyArray
 
 clean:
 	rm -f *.o *.hi
