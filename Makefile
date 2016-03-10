@@ -1,10 +1,7 @@
-all: ArrayTests
+all: Main
 
-MyArray: MyArray.hs
-	ghc -Wall --make MyArray
-
-ArrayTests: ArrayTests.hs
-	ghc -Wall --make ArrayTests
+Main: Main.hs
+	ghc -Wall --make Main
 
 clean:
-	rm -f *.o *.hi ArrayTests
+	rm -f *.o *.hi ArrayTests Main
