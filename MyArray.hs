@@ -1,4 +1,4 @@
-module MyArray where
+module MyArray (Ix, range, rangeSize, Array, listArray, (!), elems, array, update, (//)) where
 import MyArrayIx
 
 data Node i e = Node {key::i, value::e, left::Node i e, right::Node i e}
