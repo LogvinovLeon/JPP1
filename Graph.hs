@@ -29,5 +29,5 @@ reachable :: Graph -> Vertex -> [Vertex]
 reachable g v = let gs = graphSize g in
                 let used = array (1, gs) (zip [1..gs] (cycle [False])) in
                 let usage = zip [1..gs] (elems $ dfs g v used) in
-                fst <$> (filter snd usage)
+                fst <$> filter snd usage
 
