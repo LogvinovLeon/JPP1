@@ -26,8 +26,7 @@ instance Ix Char
 instance Ix Int
 instance Ix Integer
 instance (Ix a, Ix b) => Ix (a,b) where
-  range (l, r) = [(l_, r_) | l_ <- range (fst l, fst r),
-                             r_ <- range (snd l, snd r)]
+  range (l, r) = zip (range (fst l, fst r)) (range (snd l, snd r))
   index (l, r) x = li * (rangeSize (snd l, snd r)) + ri
     where li = index (fst l, fst r) $ fst x
           ri = index (snd l, snd r) $ snd x
