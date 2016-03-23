@@ -1,5 +1,5 @@
 {-# LANGUAGE RecordWildCards #-}
-module MyArray (Ix(..), Array, listArray, (!), elems, update, array, (//)) where
+module MyArray (Ix(..), Array, listArray, (!), elems, update, array, (//), assocs, indices) where
 
 import MyArrayIx
 
@@ -56,9 +56,9 @@ find Node{..} i
   | i > key = find right i
   | otherwise = Just value
 
-values :: Ix i => Node i e -> [e]
-values Nil = []
-values Node{..} = values left ++ [value] ++ values right
+toListMap :: Ix i => (Node i e -> a) -> Node i e -> [a]
+toListMap _ Nil = []
+toListMap f n@Node{..} = toListMap f left ++ [f n] ++ toListMap f right
 
 data Array i e = Array{bounds::(i, i), tree::Node i e} deriving (Show)
 
@@ -71,7 +71,7 @@ listArray b es = Array{bounds=b, tree=foldr add Nil (zip (range b) es)}
   | otherwise = indexOutOfRange
 
 elems :: Ix i => Array i e -> [e]
-elems Array{..} = values tree
+elems Array{..} = toListMap value tree
 
 array :: Ix i => (i, i) -> [(i, e)] -> Array i e
 array b es
@@ -87,6 +87,12 @@ update i e a@Array{..}
 (//) a@Array{..} es
   | all (inRange bounds) (map fst es) = a{tree=foldr add tree es}
   | otherwise = indexOutOfRange
+
+assocs :: Ix i => Array i e -> [(i, e)]
+assocs Array{..} = toListMap (\Node{..} -> (key, value)) tree
+
+indices :: Ix i => Array i e -> [i]
+indices Array{..} = toListMap key tree
 
 fromJust :: Maybe e -> e
 fromJust (Just e) = e
