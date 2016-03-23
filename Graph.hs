@@ -15,7 +15,7 @@ readIncidence s = (v, neighbours)
 readGraph :: String -> Graph
 readGraph s = array bounds is
   where bounds = (fst $ head is, fst $ last is)
-        is = sort $ readIncidence <$> lines s
+        is = sort $ readIncidence <$> filter (\line -> not (null line)) (lines s)
 
 graphBounds :: Graph -> (Int, Int)
 graphBounds g = (minimum vs, maximum vs)
@@ -32,8 +32,10 @@ dfs g v used
   | otherwise = foldr (dfs g) (used // [(v, True)]) (g ! v)
 
 reachable :: Graph -> Vertex -> [Vertex]
-reachable g v = let gb = graphBounds g
-                    used = array gb ((,False) <$> graphVertexes g)
-                    usage = assocs $ dfs g v used in
-                fst <$> filter snd usage
+reachable g v
+  | elem v vertexes = fst <$> filter snd (assocs $ dfs g v used)
+  | otherwise = []
+  where gb = graphBounds g
+        vertexes = graphVertexes g
+        used = array gb ((,False) <$> vertexes)
 
