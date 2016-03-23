@@ -1,14 +1,15 @@
 import Graph
 import System.Environment
-import Control.Applicative ((<$>))
+import qualified Data.ByteString.Char8 as B
 
-readContents :: [String] -> IO String
-readContents [] = getContents
-readContents (filename:_) = readFile filename
+readContents :: [String] -> IO B.ByteString
+readContents [] = B.getContents
+readContents (filename:_) = B.readFile filename
 
 solve :: String -> String
 solve c = show $ reachable (readGraph c) 1
 
 main :: IO ()
-main = solve <$> (getArgs >>= readContents) >>= putStrLn
-
+main = do
+  contents <- getArgs >>= readContents
+  putStrLn $ solve $ B.unpack contents
