@@ -1,5 +1,5 @@
 {-# LANGUAGE RecordWildCards #-}
-module MyArray (Ix(..), listArray, (!), elems, update, array, (//)) where
+module MyArray (Ix(..), Array, listArray, (!), elems, update, array, (//)) where
 
 import MyArrayIx
 
@@ -68,7 +68,7 @@ listArray b es = Array{bounds=b, tree=foldr add Nil (zip (range b) es)}
 (!) :: Ix i => Array i e -> i -> e
 (!) Array{..} i
   | inRange bounds i = fromJust $ find tree i
-  | otherwise = error "Index out of defined range"
+  | otherwise = indexOutOfRange
 
 elems :: Ix i => Array i e -> [e]
 elems Array{..} = values tree
@@ -76,17 +76,21 @@ elems Array{..} = values tree
 array :: Ix i => (i, i) -> [(i, e)] -> Array i e
 array b es
   | all (inRange b) (map fst es) = Array{bounds=b, tree=foldr add Nil es}
-  | otherwise = error "Index out of range"
+  | otherwise = indexOutOfRange
 
 update :: Ix i => i -> e -> Array i e -> Array i e
 update i e a@Array{..}
   | inRange bounds i = a{tree=add (i, e) tree}
-  | otherwise = error "Index out of defined range"
+  | otherwise = indexOutOfRange
 
 (//) :: Ix i => Array i e -> [(i, e)] -> Array i e
 (//) a@Array{..} es
   | all (inRange bounds) (map fst es) = a{tree=foldr add tree es}
+  | otherwise = indexOutOfRange
 
 fromJust :: Maybe e -> e
 fromJust (Just e) = e
-fromJust Nothing = error "Element is undefined"
+fromJust Nothing = error "Element with this index is not defined"
+
+indexOutOfRange :: a
+indexOutOfRange = error "Index out of defined range"
